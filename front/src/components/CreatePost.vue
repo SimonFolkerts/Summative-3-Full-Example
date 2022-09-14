@@ -4,11 +4,11 @@
     <form @submit.prevent>
       <div class="form-group">
         <label for="title">Title</label>
-        <input v-model="post.title" id="title" type="text" />
+        <input v-model="title" id="title" type="text" />
       </div>
       <div class="form-group">
         <label for="content">Content</label>
-        <textarea v-model="post.content" id="content" rows="10"></textarea>
+        <textarea v-model="content" id="content" rows="10"></textarea>
       </div>
       <div class="form-group">
         <label for="image">Image</label>
@@ -23,25 +23,29 @@
 export default {
   data() {
     return {
-      post: {
-        title: null,
-        content: null,
-        image: null,
-      },
+      // each property is now independant
+      title: null,
+      content: null,
+      image: null,
     };
   },
   methods: {
     imageSelected(event) {
-      this.post.image = event.target.files;
+      // save the selected image file into the post object
+      this.image = event.target.files[0];
     },
     async uploadPost(event) {
+      const formData = new FormData();
+      // manually construct form data so that multer can handle it on the back end
+      formData.append("title", this.title);
+      formData.append("content", this.content);
+      formData.append("image", this.image);
+
       // prepare request settings and load up the data
       const config = {
         method: "POST",
-        headers: {
-          "content-type": "application/json",
-        },
-        body: JSON.stringify(this.post),
+        // send the form data. Note lack of application/json header
+        body: formData,
       };
 
       // send the request and data
