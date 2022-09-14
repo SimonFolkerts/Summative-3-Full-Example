@@ -21,3 +21,8 @@ A catchall end point was added to the main file, this will be the last enpoint a
 Instead of just sending a test message, we can now send data from the forms to the back end by sending the object that contains the form data to the back end.
 
 On the back end, we have created a Schema file that exports a model that represents Posts. We use the Post model to create a new document using the data from the request (ignoring the images for now)  and save it to the database.
+
+## 3: Create Post Image
+On the front end we modify the upload method to manually construct formData representing our fields. This lets us send the image up to multer, as application/json data wouldn't work.
+
+On the back end, multer is configured on the posts route and attached as middleware to the post endpoint. Here the data is assembled into the new document from the model and saved.
