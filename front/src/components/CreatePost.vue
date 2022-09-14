@@ -16,9 +16,6 @@
       </div>
       <button @click="uploadPost" type="button">Upload</button>
     </form>
-    {{ post.title }}
-    {{ post.content }}
-    {{ post.image }}
   </div>
 </template>
 
@@ -44,9 +41,7 @@ export default {
         headers: {
           "content-type": "application/json",
         },
-        body: JSON.stringify({
-          test: "test",
-        }),
+        body: JSON.stringify(this.post),
       };
 
       // send the request and data
