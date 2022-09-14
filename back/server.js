@@ -19,7 +19,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // routes go here
+const posts = require("./routes/posts");
+app.use("/posts", posts);
 
+// if request matches nothing it will trigger this universal endpoint
+app.use("*", (req, res) => {
+  res.status(404).send("no such route");
+});
 // ----
 
 // init db connection and API http interface

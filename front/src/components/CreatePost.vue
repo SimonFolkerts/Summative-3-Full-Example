@@ -14,7 +14,7 @@
         <label for="image">Image</label>
         <input @input="imageSelected" id="image" type="file" />
       </div>
-      <button type="button">Upload</button>
+      <button @click="uploadPost" type="button">Upload</button>
     </form>
     {{ post.title }}
     {{ post.content }}
@@ -36,6 +36,25 @@ export default {
   methods: {
     imageSelected(event) {
       this.post.image = event.target.files;
+    },
+    async uploadPost(event) {
+      // prepare request settings and load up the data
+      const config = {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({
+          test: "test",
+        }),
+      };
+
+      // send the request and data
+      const response = await fetch("http://127.0.0.1:3000/posts/", config);
+      // handle the response
+      const data = await response.json();
+      // log response
+      console.log(data);
     },
   },
 };
