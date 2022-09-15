@@ -43,17 +43,19 @@ router.post("/", upload.single("image"), (req, res) => {
   post.save(() => {
     // delete the file from the uploads folder once database storage is complete
     fs.unlinkSync(path.join("./uploads/" + req.file.filename));
-    // then send back post
     res.json(post);
   });
 });
 
-// new endpoint that can handle GET requests to posts/
 router.get("/", async (req, res) => {
-  // find all posts, using lean() to return just simple objects instead of fancy mongoose data containers (this makes the images to base64 which are easier to work with)
   const posts = await Post.find({}).lean();
   // send the data back to the client
   res.json(posts);
+});
+
+router.delete("/:id", async (req, res) => {
+  const deleted = await Post.findByIdAndDelete(req.params.id);
+  res.json(deleted);
 });
 
 module.exports = router;
