@@ -5,7 +5,7 @@ For the back end, the basic utilities are installed.
 dotenv to hide credentials, cors for security bypass for local development, mongoose for db connection,
 and express to handle functionality. Inital connections established but no routes defined yet
 
-## 1: Create Post Basic
+# 1: Create Post Basic
 New component CreatePost.vue added, and a basic form with v-model for text and a listener for file selection added.
 For basic styling, sass was added using `npm add -D sass` to make the form a bit tidier while developing.
 
@@ -26,3 +26,10 @@ On the back end, we have created a Schema file that exports a model that represe
 On the front end we modify the upload method to manually construct formData representing our fields. This lets us send the image up to multer, as application/json data wouldn't work.
 
 On the back end, multer is configured on the posts route and attached as middleware to the post endpoint. Here the data is assembled into the new document from the model and saved.
+
+# 4: List Vue
+Now that basic upload is ready we can add the ability to view a list of uploaded posts. A new componenet is created on the front end that can be used to view the list.
+
+This new component has the ability to GET request to the server, which has a new route added that can handle GET requests to POST. The endpoint retreives the posts from the database and sends them back as JSON data. Note the use of `lean()` on the .find() method, this ensures that the data comes back as a simple object, instead of using a mongoose document model. It also means that the image data is converted to base64, which can be rendered in image tags using a special code in the src atttribute.
+
+Some minimal styling is added as well.
