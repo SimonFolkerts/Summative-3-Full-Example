@@ -48,4 +48,9 @@ router.post("/", upload.single("image"), (req, res) => {
   });
 });
 
+router.get("/", async (req, res) => {
+  const posts = await Post.find({}).lean();
+  res.json(posts);
+});
+
 module.exports = router;
