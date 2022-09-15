@@ -33,3 +33,8 @@ Now that basic upload is ready we can add the ability to view a list of uploaded
 This new component has the ability to GET request to the server, which has a new route added that can handle GET requests to POST. The endpoint retreives the posts from the database and sends them back as JSON data. Note the use of `lean()` on the .find() method, this ensures that the data comes back as a simple object, instead of using a mongoose document model. It also means that the image data is converted to base64, which can be rendered in image tags using a special code in the src atttribute.
 
 Some minimal styling is added as well.
+
+# 5: Delete Posts
+A button with a data attribute is added to the list view. This buttons data attribute contains the id of the post that it belongs to. When the button is clicked it triggers an event handler that reads the data attribute and then sends a DELETE request to the back end for the specified post by appending the id of the cicked to the url.
+
+On the backend an endpoint has been added that can receive DELETE requests with a second url segment. This is intended to be the id of a post to be deleted. The API uses the Post model to send a delete by ID request to the database.
