@@ -31,7 +31,6 @@ export default {
   },
   methods: {
     imageSelected(event) {
-      // save the selected image file into the post object
       this.image = event.target.files[0];
     },
     async uploadPost(event) {

@@ -3,9 +3,14 @@
     <h3>List View Component</h3>
     <button @click="fetchPosts" type="button">GET</button>
     <ul class="post-list">
-      <!-- list rendering for the list of posts. The base64 data for the images is rendered using the special source in the image tag below -->
       <div v-for="post of postList" :key="post._id" class="post-list-item">
         <h3>{{ post.title }}</h3>
+
+        <!-- New button for deletion -->
+        <button @click="deletePost" :data-id="post._id" type="button">
+          Delete
+        </button>
+
         <img :src="`data:image/png;base64,${post.image.data}`" />
       </div>
     </ul>
@@ -30,6 +35,14 @@ export default {
       // save the data
       this.postList = data;
     },
+    async deletePost(e) {
+      const response = await fetch(
+        `http://localhost:3000/posts/${e.target.dataset.id}`,
+        {
+          method: "DELETE",
+        }
+      );
+    },
   },
 };
 </script>
@@ -51,6 +64,9 @@ export default {
     width: 300px;
     height: 100px;
     object-fit: cover;
+  }
+  button {
+    align-self: center;
   }
 }
 </style>
