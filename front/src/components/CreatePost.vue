@@ -1,6 +1,6 @@
 <template>
   <div class="component-root">
-    <h3>Create Form Component</h3>
+    <h3>Create Post Component</h3>
     <form @submit.prevent>
       <div class="form-group">
         <label for="title">Title</label>
@@ -8,7 +8,7 @@
       </div>
       <div class="form-group">
         <label for="content">Content</label>
-        <textarea v-model="content" id="content" rows="10"></textarea>
+        <textarea v-model="content" id="content" rows="5"></textarea>
       </div>
       <div class="form-group">
         <label for="image">Image</label>
@@ -63,11 +63,11 @@ export default {
 form {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.4rem;
 
   width: 40rem;
 
-  padding: 1rem;
+  padding: 0.4rem;
   border: 1px solid black;
 
   button {

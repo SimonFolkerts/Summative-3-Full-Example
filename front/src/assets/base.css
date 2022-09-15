@@ -1,3 +1,9 @@
 .component-root {
+  margin: 1rem 0;
+  padding: 0.5rem;
   border: 2px solid black;
+}
+
+.component-root > h3 {
+  margin-top: 0;
 }
