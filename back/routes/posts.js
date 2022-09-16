@@ -31,12 +31,14 @@ router.post("/", upload.single("image"), (req, res) => {
   const post = new Post({
     title: req.body.title,
     content: req.body.content,
-    image: {
-      // the image is read from the upload folder where multer put it
-      data: fs.readFileSync(path.join("./uploads/" + req.file.filename)),
-      // inform of what type of file it is
-      contentType: "image/png",
-    },
+    image: req.file
+      ? {
+          // the image is read from the upload folder where multer put it
+          data: fs.readFileSync(path.join("./uploads/" + req.file.filename)),
+          // inform of what type of file it is
+          contentType: "image/png",
+        }
+      : null,
   });
 
   // save the new document, and once complete, send back the new document to the client
@@ -44,6 +46,29 @@ router.post("/", upload.single("image"), (req, res) => {
     // delete the file from the uploads folder once database storage is complete
     fs.unlinkSync(path.join("./uploads/" + req.file.filename));
     res.json(post);
+  });
+});
+
+router.put("/:id", upload.single("image"), (req, res) => {
+  const data = {
+    title: req.body.title,
+    content: req.body.content,
+  };
+
+  if (req.file) {
+    data.image = {
+      // the image is read from the upload folder where multer put it
+      data: fs.readFileSync(path.join("./uploads/" + req.file.filename)),
+      // inform of what type of file it is
+      contentType: "image/png",
+    };
+  }
+  console.log(data);
+  const post = Post.findByIdAndUpdate(req.params.id, data, () => {
+    if (req.file) {
+      fs.unlinkSync(path.join("./uploads/" + req.file.filename));
+    }
+    res.json({ message: "updated" });
   });
 });
 

@@ -53,3 +53,8 @@ We can create a new route in index.js that accepts an :id param and then create 
 The view then can load the post and render it. This means that it can also be navigated to through the address bar if the user has the id of a post.
 
 We can also modify the router view to use keep-alive and v-slots to prevent the home view component from being unloaded when navigated away from. This means that we don't need to wait for it to reload the list of posts everytime we leave and then return to it.
+
+# 8: Edit View
+Adding an edit button that can show the CreatePost form allows us to then modify the Create form to also support editing. There are a variety of approaches to editing, such as having a dedicated edit component in its own view, but in this case it could be interesting to re use the create form and make it multi purpose.
+
+By adding a prop to the create component that a parent can use to pass a post object into, the create create component can then check if the prop has a value, and if it does, switch to edit mode. The fields get prepopulated, and the create button turns into an edit button. The method changes from POST to PUT and therefore will match with a different endpoint.

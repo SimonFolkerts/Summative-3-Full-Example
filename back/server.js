@@ -24,7 +24,7 @@ app.use("/posts", posts);
 
 // if request matches nothing it will trigger this universal endpoint
 app.use("*", (req, res) => {
-  res.status(404).send("no such route");
+  res.status(404).json({ message: "no such route" });
 });
 // ----
 
