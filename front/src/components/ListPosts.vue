@@ -1,28 +1,29 @@
 <template>
   <div class="component-root">
     <h3>List View Component</h3>
-    <button @click="fetchPosts" type="button">GET</button>
-    <ul class="post-list">
-      <div v-for="post of postList" :key="post._id" class="post-list-item">
-        <h3>{{ post.title }}</h3>
-
-        <!-- New button for deletion -->
-        <button @click="deletePost" :data-id="post._id" type="button">
-          Delete
-        </button>
-
-        <img :src="`data:image/png;base64,${post.image.data}`" />
-      </div>
+    <ul v-if="!loading" class="post-list">
+      <ListItemPost
+        @deleted="fetchPosts"
+        v-for="post of postList"
+        :key="post._id"
+        :post="post"
+      />
     </ul>
+    <p v-else>loading...</p>
   </div>
 </template>
 
 <script>
+import ListItemPost from "./ListItemPost.vue";
 export default {
+  components: {
+    ListItemPost,
+  },
   data() {
     return {
       // data property that stores the fetches list of posts
       postList: [],
+      loading: false,
     };
   },
   methods: {
@@ -35,14 +36,11 @@ export default {
       // save the data
       this.postList = data;
     },
-    async deletePost(e) {
-      const response = await fetch(
-        `http://localhost:3000/posts/${e.target.dataset.id}`,
-        {
-          method: "DELETE",
-        }
-      );
-    },
+  },
+  async mounted() {
+    this.loading = true;
+    await this.fetchPosts();
+    this.loading = false;
   },
 };
 </script>
@@ -54,19 +52,5 @@ export default {
   gap: 0.4rem;
   padding: 0.4rem;
   border: 1px solid black;
-}
-
-.post-list-item {
-  display: flex;
-  justify-content: space-between;
-  border: 1px solid lightgray;
-  img {
-    width: 300px;
-    height: 100px;
-    object-fit: cover;
-  }
-  button {
-    align-self: center;
-  }
 }
 </style>

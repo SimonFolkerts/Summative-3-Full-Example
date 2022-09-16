@@ -1,7 +1,7 @@
 <template>
   <div class="component-root">
     <h3>Create Post Component</h3>
-    <form @submit.prevent>
+    <form @submit.prevent @reset="resetForm" ref="uploadForm">
       <div class="form-group">
         <label for="title">Title</label>
         <input v-model="title" id="title" type="text" />
@@ -14,7 +14,10 @@
         <label for="image">Image</label>
         <input @input="imageSelected" id="image" type="file" />
       </div>
-      <button @click="uploadPost" type="button">Upload</button>
+      <button v-if="!uploadPending" @click="uploadPost" type="button">
+        Upload
+      </button>
+      <p v-else>uploading...</p>
     </form>
   </div>
 </template>
@@ -27,13 +30,15 @@ export default {
       title: null,
       content: null,
       image: null,
+      uploadPending: false,
     };
   },
   methods: {
     imageSelected(event) {
       this.image = event.target.files[0];
     },
-    async uploadPost(event) {
+    async uploadPost() {
+      this.uploadPending = true;
       const formData = new FormData();
       // manually construct form data so that multer can handle it on the back end
       formData.append("title", this.title);
@@ -53,6 +58,17 @@ export default {
       const data = await response.json();
       // log response
       console.log(data);
+      // clear the form (this only affects the file input as the other fields are bound to data properties. Terefore we use a listener on the reset event to clear them, see the resetForm method below)
+      this.$refs.uploadForm.reset();
+      this.uploadPending = false;
+      this.$emit("uploaded", data);
+      this.$router.go();
+    },
+    // reset the v-models too
+    resetForm() {
+      this.title = null;
+      this.content = null;
+      this.image = null;
     },
   },
 };
