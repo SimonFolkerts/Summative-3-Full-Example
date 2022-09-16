@@ -14,6 +14,7 @@
         <label for="image">Image</label>
         <input @input="imageSelected" id="image" type="file" />
       </div>
+      <!-- if not currently uploading, show the uplaod button, otherwise show uploading indicator -->
       <button v-if="!uploadPending" @click="uploadPost" type="button">
         Upload
       </button>
@@ -60,8 +61,9 @@ export default {
       console.log(data);
       // clear the form (this only affects the file input as the other fields are bound to data properties. Terefore we use a listener on the reset event to clear them, see the resetForm method below)
       this.$refs.uploadForm.reset();
+      // set uploading flag to false
       this.uploadPending = false;
-      this.$emit("uploaded", data);
+      // this triggers teh view to reload, which also causes the list view to update itself and show the newly updated post
       this.$router.go();
     },
     // reset the v-models too

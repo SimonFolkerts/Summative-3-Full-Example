@@ -38,3 +38,10 @@ Some minimal styling is added as well.
 A button with a data attribute is added to the list view. This buttons data attribute contains the id of the post that it belongs to. When the button is clicked it triggers an event handler that reads the data attribute and then sends a DELETE request to the back end for the specified post by appending the id of the cicked to the url.
 
 On the backend an endpoint has been added that can receive DELETE requests with a second url segment. This is intended to be the id of a post to be deleted. The API uses the Post model to send a delete by ID request to the database.
+
+## 6: Refactor for Quality of Life Improvements
+Post list items were made into a component, using a prop to put the data from the list view into them. Each list item has the ability to request deletion from the db and will also trigger a fetch when the state changes
+
+The list view has got loading indicators for a fresh load
+
+The create component now has an upload indicator for the button, and also triggers a page refresh when uploading is complete, which also gets the list component to reload
