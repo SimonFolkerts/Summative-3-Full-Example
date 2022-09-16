@@ -10,6 +10,8 @@
         :key="post._id"
         :post="post"
       />
+
+      <p v-if="!postList.length">Nothing to see here, upload a post!</p>
     </ul>
     <p v-else>loading...</p>
   </div>

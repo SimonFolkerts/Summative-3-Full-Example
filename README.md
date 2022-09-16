@@ -45,3 +45,11 @@ Post list items were made into a component, using a prop to put the data from th
 The list view has got loading indicators for a fresh load
 
 The create component now has an upload indicator for the button, and also triggers a page refresh when uploading is complete, which also gets the list component to reload
+
+# 7: Detail View
+By adding a new detail view component that when navigated to using vue router it gets given an id for a post and uses fetch to retreive the data for the post.
+We can create a new route in index.js that accepts an :id param and then create a routerlink in the post list item to navigate to this view, attaching the post id as a param
+
+The view then can load the post and render it. This means that it can also be navigated to through the address bar if the user has the id of a post.
+
+We can also modify the router view to use keep-alive and v-slots to prevent the home view component from being unloaded when navigated away from. This means that we don't need to wait for it to reload the list of posts everytime we leave and then return to it.

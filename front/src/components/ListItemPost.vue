@@ -3,14 +3,17 @@
   <div class="post-list-item">
     <h3>{{ post.title }}</h3>
 
+    <!-- button for switching to the detail view -->
+    <RouterLink
+      id="detail-link"
+      :to="{ name: 'postDetail', params: { id: post._id } }"
+      ><button type="button">View Post</button></RouterLink
+    >
     <div class="delete-items">
-      <RouterLink :to="{ name: 'postDetail', params: { id: post._id } }"
-        >hello</RouterLink
-      >
       <button v-if="!deletePending" @click="deletePost" type="button">
         Delete
       </button>
-      <p v-else>deleting...</p>
+      <span v-else>deleting...</span>
     </div>
 
     <img :src="`data:image/png;base64,${post.image.data}`" />
@@ -48,14 +51,12 @@ export default {
 .post-list-item {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   border: 1px solid lightgray;
   img {
     width: 300px;
     height: 100px;
     object-fit: cover;
   }
-}
-.delete-items {
-  align-self: center;
 }
 </style>

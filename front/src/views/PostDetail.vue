@@ -1,7 +1,7 @@
 <template>
   <div>
+    <h1>Post Detail</h1>
     <div v-if="post" class="post-content">
-      <h3>Detail View Component</h3>
       <h2>{{ post.title }}</h2>
       <p>{{ post.content }}</p>
       <img :src="`data:image/png;base64,${post.image.data}`" />
