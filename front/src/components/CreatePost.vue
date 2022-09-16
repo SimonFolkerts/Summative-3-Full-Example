@@ -1,6 +1,6 @@
 <template>
   <div class="component-root">
-    <h3>Create Post Component</h3>
+    <h3>Create/Edit Post Component</h3>
     <form @submit.prevent @reset="resetForm" ref="uploadForm">
       <div class="form-group">
         <label for="title">Title</label>
@@ -12,11 +12,12 @@
       </div>
       <div class="form-group">
         <label for="image">Image</label>
-        <input @input="imageSelected" id="image" type="file" />
+        <input @input="imageSelected" id="image" type="file" ref="fileInput" />
       </div>
       <!-- if not currently uploading, show the uplaod button, otherwise show uploading indicator -->
+
       <button v-if="!uploadPending" @click="uploadPost" type="button">
-        Upload
+        {{ editingPost ? "Update Post" : "Create Post" }}
       </button>
       <p v-else>uploading...</p>
     </form>
@@ -25,6 +26,9 @@
 
 <script>
 export default {
+  props: {
+    editingPost: Object,
+  },
   data() {
     return {
       // each property is now independant
@@ -48,13 +52,20 @@ export default {
 
       // prepare request settings and load up the data
       const config = {
-        method: "POST",
+        // ternary operator, if there is aa post to edit then set method to PUT else set it to POST
+        method: this.editingPost ? "PUT" : "POST",
         // send the form data. Note lack of application/json header
         body: formData,
       };
 
       // send the request and data
-      const response = await fetch("http://127.0.0.1:3000/posts/", config);
+      const response = await fetch(
+        `http://127.0.0.1:3000/posts/${
+          // ternary operation, if there is a post to edit then add its id to the url, otherwise add an empty string (i.e. nothing)
+          this.editingPost ? this.editingPost._id : ""
+        }`,
+        config
+      );
       // handle the response
       const data = await response.json();
       // log response
@@ -73,6 +84,12 @@ export default {
       this.image = null;
     },
   },
+  mounted() {
+    if (this.editingPost) {
+      this.title = this.editingPost.title;
+      this.content = this.editingPost.content;
+    }
+  },
 };
 </script>
 
@@ -82,7 +99,7 @@ form {
   flex-direction: column;
   gap: 0.4rem;
 
-  width: 40rem;
+  max-width: 40rem;
 
   padding: 0.4rem;
   border: 1px solid black;

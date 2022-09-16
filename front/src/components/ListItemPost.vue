@@ -16,7 +16,7 @@
       <span v-else>deleting...</span>
     </div>
 
-    <img :src="`data:image/png;base64,${post.image.data}`" />
+    <img v-if="post.image" :src="`data:image/png;base64,${post.image.data}`" />
   </div>
 </template>
 
