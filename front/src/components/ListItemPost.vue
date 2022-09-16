@@ -4,6 +4,9 @@
     <h3>{{ post.title }}</h3>
 
     <div class="delete-items">
+      <RouterLink :to="{ name: 'postDetail', params: { id: post._id } }"
+        >hello</RouterLink
+      >
       <button v-if="!deletePending" @click="deletePost" type="button">
         Delete
       </button>

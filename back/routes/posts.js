@@ -53,6 +53,11 @@ router.get("/", async (req, res) => {
   res.json(posts);
 });
 
+router.get("/:id", async (req, res) => {
+  const post = await Post.findById(req.params.id).lean();
+  res.json(post);
+});
+
 router.delete("/:id", async (req, res) => {
   const deleted = await Post.findByIdAndDelete(req.params.id);
   res.json(deleted);
