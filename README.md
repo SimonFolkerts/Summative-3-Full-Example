@@ -58,3 +58,8 @@ We can also modify the router view to use keep-alive and v-slots to prevent the 
 Adding an edit button that can show the CreatePost form allows us to then modify the Create form to also support editing. There are a variety of approaches to editing, such as having a dedicated edit component in its own view, but in this case it could be interesting to re use the create form and make it multi purpose.
 
 By adding a prop to the create component that a parent can use to pass a post object into, the create create component can then check if the prop has a value, and if it does, switch to edit mode. The fields get prepopulated, and the create button turns into an edit button. The method changes from POST to PUT and therefore will match with a different endpoint.
+
+# 9: Login and Signup Views and Endpoints
+Now that we have full CRUD for a data type, we could move on to users. We can create a login view and a signup view, as well as a new router on the back end to handle authentication requests. Each view will send username and password form data from the front to the back, and each endpoint will recieve the request and log tha data before sending a generic response.
+
+The next step will be to create the user schema and model and set up the creation of new users.

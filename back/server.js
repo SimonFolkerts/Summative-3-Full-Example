@@ -19,6 +19,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // routes go here
+
+// authentication router added here
+const auth = require("./routes/authentication");
+app.use(auth);
+
 const posts = require("./routes/posts");
 app.use("/posts", posts);
 

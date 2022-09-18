@@ -93,28 +93,4 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-
-  max-width: 40rem;
-
-  padding: 0.4rem;
-  border: 1px solid black;
-
-  button {
-    align-self: center;
-    padding: 1rem 2rem;
-  }
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-
-  padding: 1rem;
-  border: 1px solid lightgray;
-}
-</style>
+<style scoped lang="scss"></style>
