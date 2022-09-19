@@ -63,3 +63,12 @@ By adding a prop to the create component that a parent can use to pass a post ob
 Now that we have full CRUD for a data type, we could move on to users. We can create a login view and a signup view, as well as a new router on the back end to handle authentication requests. Each view will send username and password form data from the front to the back, and each endpoint will recieve the request and log tha data before sending a generic response.
 
 The next step will be to create the user schema and model and set up the creation of new users.
+
+## 10: Signup Create User
+By adding a schema and model we can enable the application to create new users. We create a new User.js file and use that to define our schema, which inlcudes some basic validation.
+
+This schema is used to export a model that can then be imported to the authentication route, where it is used to save a new user on the post to signup route. Some basic error handling is present too.
+
+## 11: Signup Password Hashing
+Storing passwords in plain text is extremely insecure and irresponsible. Instead, we can encrypt the passwords. By running `npm install bcrypt` we can install bcrypt, a package that can salt and hash passwords.
+We can create a mongoose hook for the user schema, which executes prior to every save of a new user. This hook will run a function that uses bcrypt to encrypt the password before storage. Note the use of a regular `function` rather than an arrow function `() => {}`. This is done to allow the use of the `this` keyword to refer to the correct object. Arrow functions do not handle `this` the same way that regular functions do. This is something worth looking into if doing object oriented programming.
