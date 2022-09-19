@@ -9,12 +9,17 @@ const cors = require("cors");
 // mongoose
 const mongoose = require("mongoose");
 
+// cookie-parser
+const cookieParser = require("cookie-parser");
+
 // init app
 const express = require("express");
 const app = express();
 
 // utility middleware
-app.use(cors());
+
+// cors needs to be set to use credentials (this allwos the transmission of cookies), and the front end needs to be whitelisted to prevent security alerts (browsers get upset when cookies are sent to and from the same origin, such as localhost to localhost)
+app.use(cors({ credentials: true, origin: "http://127.0.0.1:5173" }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
