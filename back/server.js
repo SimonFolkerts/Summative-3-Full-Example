@@ -19,9 +19,15 @@ const app = express();
 // utility middleware
 
 // cors needs to be set to use credentials (this allwos the transmission of cookies), and the front end needs to be whitelisted to prevent security alerts (browsers get upset when cookies are sent to and from the same origin, such as localhost to localhost)
-app.use(cors({ credentials: true, origin: "http://127.0.0.1:5173" }));
+app.use(
+  cors({
+    credentials: true,
+    origin: "http://127.0.0.1:5173",
+  })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 // routes go here
 

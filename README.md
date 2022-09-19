@@ -72,3 +72,19 @@ This schema is used to export a model that can then be imported to the authentic
 ## 11: Signup Password Hashing
 Storing passwords in plain text is extremely insecure and irresponsible. Instead, we can encrypt the passwords. By running `npm install bcrypt` we can install bcrypt, a package that can salt and hash passwords.
 We can create a mongoose hook for the user schema, which executes prior to every save of a new user. This hook will run a function that uses bcrypt to encrypt the password before storage. Note the use of a regular `function` rather than an arrow function `() => {}`. This is done to allow the use of the `this` keyword to refer to the correct object. Arrow functions do not handle `this` the same way that regular functions do. This is something worth looking into if doing object oriented programming.
+
+## 12: Login JWT Cookie
+By adding `jsonwebtoken` and `cookie-parser` packages, we can create an endpoint that can log the user in after signup.
+We first need to modify CORS to use credientials (this enables the backend to send and receive cookies) and we need to whitelist the front end address, since browser CORS policies would other wise prevent same origin credential sharing.
+
+We also need to add an option property to the fetch function on the login view on the frontend. We need to add `credentials: "include"` to allow the front end to send and receive cookies.
+
+Once that is sorted, we modify the login endpoint to check the submitted user information sent from the login component on the front end. It checks the username using findOne, and then if a user is found it checks the password using bcrypt.compare.
+
+If username and password are both correct, then a new JWT is minted using the user id, which gets encoded into the token. This then gets attached to the response as a cookie, and finally the response is sent back.
+
+On the front end the cookie should arrive and be visible in the applications tab of the dev tools. On the sidebar click on the cookies dropdown and click on the address of the front end application, and the jwt cookie should be visible in the list with the json web token string as its value.
+
+Now we are able to use the signup view to create a new user, and we are able to use the login view to get issud an new json web token. As a final step we could add router links for the login and signup pages, which later on will be conditionally rendered.
+
+The next step is to add route protection to certain routes, allowing us to lock certain endpoints to only those who are logged in.

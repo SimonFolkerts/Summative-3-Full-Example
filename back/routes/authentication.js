@@ -51,7 +51,12 @@ router.post("/login", async (req, res) => {
         // create a new token using the above function and encode the user ID into it
         const token = createToken(user._id);
         // attach a cookie to the response that contains the json web token (httpOnly makes it inaccessible to the js of the client, and maxage of the token is used (multiplied by 1000 since it is in ms)
-        res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
+        res.cookie("jwt", token, {
+          httpOnly: true,
+          maxAge: maxAge * 1000,
+          sameSite: "none",
+          secure: true,
+        });
         res.status(200).json(user);
       }
     }
