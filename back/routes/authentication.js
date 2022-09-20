@@ -9,16 +9,6 @@ const bcrypt = require("bcrypt");
 // import user model
 const User = require("../models/User.js");
 
-// JWT (we will need to install `jsonwebtoken`)
-// set expire time for token (this is in seconds)
-const maxAge = 3 * 24 * 60 * 60; // 3 days
-// create json web token function
-function createToken(id) {
-  return jwt.sign({ id }, "asdflkasjdf", {
-    expiresIn: maxAge,
-  });
-}
-
 // POST to signup route
 router.post("/signup", async (req, res) => {
   try {
@@ -34,23 +24,24 @@ router.post("/signup", async (req, res) => {
 // POST to login route
 router.post("/login", async (req, res) => {
   try {
-    // try to find a user with a matching username
+    // find user
     const user = await User.findOne({ username: req.body.username });
     console.log(user);
-    // if no user is found, throw an error, ending the try/catch and passing it to the catch block
     if (!user) {
+      // if no user, error
       throw Error("no such user");
     } else {
-      // otherwise if there is a user, check their password using bcrypt
+      // if user, check password
       const auth = await bcrypt.compare(req.body.password, user.password);
-      // if not the right password, throw an error
       if (!auth) {
+        // if no password, error
         throw Error("incorrect password");
       } else {
-        // if a match is found, issue a new token and send it down to the client by attaching it as the value of a cookie to the response
-        // create a new token using the above function and encode the user ID into it
-        const token = createToken(user._id);
-        // attach a cookie to the response that contains the json web token (httpOnly makes it inaccessible to the js of the client, and maxage of the token is used (multiplied by 1000 since it is in ms)
+        const maxAge = 3 * 24 * 60 * 60;
+        // if password, issue token, attach cookie, send
+        const token = jwt.sign({ id: user._id }, "asdflkasjdf", {
+          expiresIn: maxAge,
+        });
         res.cookie("jwt", token, {
           httpOnly: true,
           maxAge: maxAge * 1000,
