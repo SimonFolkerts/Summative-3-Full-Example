@@ -99,3 +99,83 @@ Router links have also been added to the navigation for the login and sign up pa
 On the back end, a new file is added called auth middleware. This file contains the logic for checking a token and authorising a request. It can be attached to routes to serve as a route protection middleware. Every request that arrives at a route that has this middleware attached to it, will pass through the middleware first. The middleware will then check the token, and if it is a valid match it will pass the request on to the endpoint using `next()`. If it isn't a match, it will intercept the request and immediately respond back with an 'unauthorized' message of some sort, ending the transaction.
 
 This middleware is imported into the relevant routes and attached as an argument to the endpoint methods for the relevant routes
+
+## 14: Logout
+Logging out is very simple. In order to log out the jwt cookie should be removed from the browser. Previously this has been achieved by simple deleting it by right clicking on it and choosing delete, however we want to do this programmatically when the user selects logout.
+
+While we cannot access and delete the cookie directly, as it is protected from the js by being sent as `httpOnly: true`, what we can do is replace it with a new jwt cookie that has an almost instant expire time
+
+On the front end we create a button that triggers a method that sends a GET request to `http://127.0.0.1:3000/logout`. This endpoint then responds with a new jwt cookie with no content and a 1 millisecond lifespan, which is received by the client and replaces the original jwt cookie and then immediately expires.
+
+## 15: Auth Summary and Theory
+Authentication is a complex subject, but at this stage we have a complete signup/login/logout system.
+
+No is a good time to recap and look back at what was added and how it works.
+
+### Utilities Needed
+For authentication to work using json web tokens sent via cookies, we need to enable several things that allow the transmission of cookies.
+
+The way JWT based authentication works is that for a user to be considered logged in, their requests should come with a json web token, a special encrypted string that contains some identifying information that can be verified by the back end. As long as the client is sending requests with this information attached, then they are considered logged in. The server checks each requests to protected routes and looks for the valid token before allowing a response or rejecting the request.
+
+Think of it kind of like having a stampt that lets you into a club or event. As long as you have the stamp on your hand, you are considered authenticated and are granted access. To log out, we simply remove the token from the requests, i.e. we remove the stamp.
+
+So essentially, instead of the server storing a list of all the users who are currently logged in, like a guest list at an event, instead we give the client a token they can use to get access to routes, like a pass or a stamp. Both ways are valid and have their pros and cons, but we are gonna use the latter.
+
+The question then becomes, how do we add the token to the requests and where do we store it? The client needs to receive the token and hnd on to it for as long as they are logged in so we need some way to transmit and store it. 
+
+For transmission, we could just transmit the token as part of the request payload or in the url, but this isn't particularly secure. We will also need to store the token on the client side once it is issued to the client by the server upon logging in.
+
+A solution that addresses both issues is using cookies. Cookies are small text files that are used to transfer and hold information and are saved by the browser. They are used to allow the browser to 'remember' information about websites such as logins, preferences, settings etc. When you choose a theme on your fav website or when you select 'remember my details' after placing an online order, you are asking to receive a cookie from the server that stores that information in the browser and is then re used next time you visit to remember those settings or details.
+
+Cookies are attached to http requests and responses and transmit this information back and forth with each http interaction.
+
+When a user logs in to the site, we can put the JWt into a cookie and then send that cookie down to the user to act as the stamp or pass to get into the club or event. The cookie is stored on the browser and has an expiry time, but as long as it is not expired it can be attached to every request the client makes to the server and acts as the authentication for accessing protected routes. The server can check each incoming request to see if the cookie is attached and then validated the token inside to see if the user is authentic.
+
+In order to enable the transmission of cookies in our application, some steps need to be taken first however, as cookies can be a potential security issue (this is why many websites have a popup asking about cookies, a recent law change in the EU brought this about with regards to information privacy and awareness). Browsers are very skeptical of cookies from addresses other than the one that the front end is being served from, and since our application front and back run on two different ports, they are considered separate servers and requests and cookies are flagged as 'cross origin' and 'third party', which normally are blocked.
+
+Here's hwo we can circumvent that:
+
+- Back End cors options need to be set to allow the traffic through from one server to the other
+  - Cors needs to have the credentials option set to `true`. This allows the attachment of cookies to the reqeusts and responses.
+  - Cors needs to have at least one specific origin address whitelisted (the addresses of the front end). This is because attaching credentials comes with a higher security risk so we can't just allow any address, we need to explicitly state which ones are allowed. This avoids our cookies being intercepted and used by some other random address to impersonate our front end.
+- `cookie-parser` package needs to be installed on the back end to facilitate the reading and setting of cookies
+- On the front end, any requests to routes that will require authentication should have an option added: `credentials: "include"`. Similar to the back end, this enables the front end to transmit cookies with the request.
+- It is also important to make sure that consistent addresses are used on the front and back end. Mixing localhost and 127.0.0.1 will now cause issues. Even though they refer to the same thing, the increased paranoia of the browser when using cookies will result in them beig considered mismatched, so I would suggest just using 127.0.0.1 everywhere. In the example I have whitelisted both.
+- When issuing the cookie, it is important to ensure that it has `sameSite: 'none` and `secure: true` set otherwise due to the front and back being on separate servers CORS will reject the cookies. Cookies sent from a different address are considered 'third party' cookies and are by default mistrusted unless certain conditions are met.
+
+
+With that sorted, here is a recap of the processes
+
+
+### Signup
+The front end needs a form that allows the user to insert their details. This form is then submitted via POST to the back end.
+
+The back end receives the user details, and uses a User Schema and User Model to create a new user entry. Importantly, the User Schema has a hook built into it that triggers everytime the model is used to save a new user. This hook fires right before the save and it uses `bcrypt` to salt and hash the password before it is saved into the database. This is good because it is considered extremely bad practice to store passwords as plain text.
+
+### Login
+For Login things get a little more complicated.
+
+The front end needs a form that is used to POST the username and password to a login route on the back end.
+
+1. The back end receives this request and first searches for the user.
+1. If the user is found, it then checks the password against the encrypted one stored on the database.
+1. If it is a match, then the user is authentic and should get a token. Having a token is how a user is considered logged in.
+1. The endpoint uses `jsonwebtoken` to create a new token, encoding into it the id of the user it was created for, and then inserts it into a cookie.
+1. The cookie is attached to the response and then the response is sent back, ending the interaction.
+1. The cookie is received by the front end and is stored in the browser. Any request with `credentials: 'include'` set will now have that cookie attached to it when sent to the back end.
+
+### Logout
+Since for a lcient to be considered 'logged in' they simply need to have a valid token attached to their requests, to log out we must remove the token from the client. Since it is not possible to just outright delete a cookie through javascript, we can use the following method.
+
+Logout is very simple, a GET is sent to an endpoint that simply creates an empty cookie with the same name as the jwt cookie, and sets its expiry time to 1ms. This cookie is sent to the client, and because it has the same name as the jwt cookie, it replaces it and then immediately self destructs. Now the client has no cookie with a valid token in it and they can no longer access protected routes. They will need to log in again and be issued a new token if they want to be considered authentic again.
+
+### Authorization for Protected Routes
+To actually handle access, we can lock off certain routes to only be accessible to requests that have a valid token cookie attached. If a request is made to create a new post for example, and we decide that only logged in users should be able to do so, then we can add route protection to the create new post endpoint that will reject any request without a valid token.
+
+We can create a middleware (like an endpoint that isn't the end, it passes on the request after doing its job) that checks if there is a token and if there is, it checks it for authenticity. If authentic, it allows the request to continue, if not, it terminates the interaction by immediately sending back a response, which ends the http req/res cycle.
+
+This middleware can be attached to any route that we want to only be accessible to authentic, logged in users.
+
+### Next Steps
+That is where we are so far, the next steps would be to distinguish different roles for users, such as administrators, or user who own the particular resource they are accessing. There are a variety of ways to acheive this, a straightforward and secure way would be every time the authentication middleware is used to check an incoming request, it decodes the user id out of the token (remember that when the token is created it has the user id encoded into it?). The middleware can then attach the user id to the request object before passing it on the the endpoint it is attached to. The endpoint can then read the id and look up the user in the database to see what roles they have, or it can compare the id to the author id of the post or comment it is handling to check if it is a match and whether to proceed or not. Lots of options for how to handle this, but that is one way.
+
