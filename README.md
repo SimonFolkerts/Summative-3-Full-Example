@@ -95,3 +95,7 @@ Now on the front end it is time to make sure everything is in order to set up ro
 For those operations that we will add protection too, at this point DELETE and POST a post, we will need to add an option to the request: `credentials: "include"`.
 
 Router links have also been added to the navigation for the login and sign up pages.
+
+On the back end, a new file is added called auth middleware. This file contains the logic for checking a token and authorising a request. It can be attached to routes to serve as a route protection middleware. Every request that arrives at a route that has this middleware attached to it, will pass through the middleware first. The middleware will then check the token, and if it is a valid match it will pass the request on to the endpoint using `next()`. If it isn't a match, it will intercept the request and immediately respond back with an 'unauthorized' message of some sort, ending the transaction.
+
+This middleware is imported into the relevant routes and attached as an argument to the endpoint methods for the relevant routes

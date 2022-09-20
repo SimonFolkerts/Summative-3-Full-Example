@@ -24,9 +24,10 @@ const upload = multer({
 
 // import the post model
 const Post = require("../models/Posts.js");
+const requireAuth = require("../middleware/authMiddleware.js");
 
 // endpoint can now read and save a file with a fieldname of image
-router.post("/", upload.single("image"), (req, res) => {
+router.post("/", requireAuth, upload.single("image"), (req, res) => {
   // create a new document from the post model using the request data
   const post = new Post({
     title: req.body.title,
@@ -83,7 +84,7 @@ router.get("/:id", async (req, res) => {
   res.json(post);
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", requireAuth, async (req, res) => {
   const deleted = await Post.findByIdAndDelete(req.params.id);
   res.json(deleted);
 });

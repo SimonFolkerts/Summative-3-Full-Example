@@ -3,7 +3,6 @@ const jwt = require("jsonwebtoken");
 // auth middleware
 // this is the middleware that we can attach to routes to enforce the presence of a valid token to access them. I.e. the user must be logged in to access the route.
 const routeProtector = (req, res, next) => {
-  console.log(req.cookies);
   const token = req.cookies.jwt; // get cookie from the request
   if (token) {
     // if cookie, try to verify it using the secret string
@@ -18,6 +17,8 @@ const routeProtector = (req, res, next) => {
         next();
       }
     });
+  } else {
+    res.json({ message: "unauthorised" });
   }
 };
 
