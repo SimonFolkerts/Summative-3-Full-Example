@@ -5,6 +5,7 @@
       <RouterLink to="/about">About</RouterLink> |
       <RouterLink to="/signup">Sign Up</RouterLink> |
       <RouterLink to="/login">Log In</RouterLink>
+      <a @click="logout" href="#">Log out</a>
     </nav>
   </header>
 
@@ -19,6 +20,16 @@
 
 <script>
 import { RouterLink, RouterView } from "vue-router";
+export default {
+  methods: {
+    async logout() {
+      const response = await fetch("http://127.0.0.1:3000/logout");
+      const data = await response.json();
+      console.log(data);
+      this.$router.push("/");
+    },
+  },
+};
 </script>
 
 <style scoped></style>

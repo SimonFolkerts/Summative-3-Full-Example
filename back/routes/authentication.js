@@ -57,4 +57,10 @@ router.post("/login", async (req, res) => {
   }
 });
 
+// for logout what should occur is the removal of the jwt cookie. This is not directly possible, but what we can do is replace it with a new jwt cookie with a very short expiry time
+router.get("/logout", (req, res) => {
+  res.cookie("jwt", "", { maxAge: 1 });
+  res.json({ message: "hello" });
+});
+
 module.exports = router;
