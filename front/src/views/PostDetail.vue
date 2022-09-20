@@ -36,7 +36,7 @@ export default {
   methods: {
     async fetchPost() {
       const response = await fetch(
-        `http://localhost:3000/posts/${this.$route.params.id}`
+        `http://127.0.0.1:3000/posts/${this.$route.params.id}`
       );
       const data = await response.json();
       this.post = data;

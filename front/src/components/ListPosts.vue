@@ -34,7 +34,7 @@ export default {
     // async method that GETs the list of posts and saves it to the data property
     async fetchPosts() {
       // fetch the data
-      const response = await fetch("http://localhost:3000/posts");
+      const response = await fetch("http://127.0.0.1:3000/posts");
       // decode the data
       const data = await response.json();
       // save the data

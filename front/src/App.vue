@@ -1,8 +1,10 @@
 <template>
   <header>
     <nav>
-      <RouterLink to="/">Home</RouterLink>
-      <RouterLink to="/about">About</RouterLink>
+      <RouterLink to="/">Home</RouterLink> |
+      <RouterLink to="/about">About</RouterLink> |
+      <RouterLink to="/signup">Sign Up</RouterLink> |
+      <RouterLink to="/login">Log In</RouterLink>
     </nav>
   </header>
 

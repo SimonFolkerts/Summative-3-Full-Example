@@ -56,6 +56,7 @@ export default {
         method: this.editingPost ? "PUT" : "POST",
         // send the form data. Note lack of application/json header
         body: formData,
+        credentials: "include",
       };
 
       // send the request and data

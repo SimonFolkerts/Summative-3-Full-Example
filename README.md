@@ -88,3 +88,10 @@ On the front end the cookie should arrive and be visible in the applications tab
 Now we are able to use the signup view to create a new user, and we are able to use the login view to get issud an new json web token. As a final step we could add router links for the login and signup pages, which later on will be conditionally rendered.
 
 The next step is to add route protection to certain routes, allowing us to lock certain endpoints to only those who are logged in.
+
+## 13: Route Protection
+Now on the front end it is time to make sure everything is in order to set up route protection and to ensure that cookies get sent properly. In the code the adresses for the fetch have all been changed to use `127.0.0.1` instead of `lcoalhost` in order to be consistent with the server. Without this consistency CORS will block the cookies.
+
+For those operations that we will add protection too, at this point DELETE and POST a post, we will need to add an option to the request: `credentials: "include"`.
+
+Router links have also been added to the navigation for the login and sign up pages.

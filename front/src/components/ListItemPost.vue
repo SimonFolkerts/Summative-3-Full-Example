@@ -35,12 +35,14 @@ export default {
       console.log("deleting");
       this.deletePending = true;
       const response = await fetch(
-        `http://localhost:3000/posts/${this.post._id}`,
+        `http://127.0.0.1:3000/posts/${this.post._id}`,
         {
           method: "DELETE",
+          credentials: "include",
         }
       );
       const data = await response.json();
+      console.log(data);
       this.$emit("deleted");
     },
   },
