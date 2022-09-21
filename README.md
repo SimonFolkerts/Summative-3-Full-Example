@@ -179,12 +179,14 @@ This middleware can be attached to any route that we want to only be accessible 
 ### Next Steps
 That is where we are so far, the next steps would be to distinguish different roles for users, such as administrators, or user who own the particular resource they are accessing. There are a variety of ways to acheive this, a straightforward and secure way would be every time the authentication middleware is used to check an incoming request, it decodes the user id out of the token (remember that when the token is created it has the user id encoded into it?). The middleware can then attach the user id to the request object before passing it on the the endpoint it is attached to. The endpoint can then read the id and look up the user in the database to see what roles they have, or it can compare the id to the author id of the post or comment it is handling to check if it is a match and whether to proceed or not. Lots of options for how to handle this, but that is one way.
 
-<<<<<<< HEAD
 ## 16: Tracking Logged In vs Logged Out State
-=======
-## 17: Tracking Logged In vs Logged Out State
->>>>>>> 2a2f701 (update readme)
 When a user logs in successfully, the API sends back the user data of the logged user. We can store this on the App.vue data(). Once the user clicks log out, we can clear it again. By keeping track of if there is a saved user and what their details are on the front end, we can conditionally render a welcome message and also swap out the log out and log in buttons as appropriate.
 
 In the next steps we will also use this data to add an author field to posts.
 
+## 17: Check if user logged in on load
+One issue with the current implementation is that if th front end app is reloaded or the tab is closed, it forgets that the user is logged in. We need a way for the app to check with the backend to see if it is already logged in when it first loads or after a reload.
+
+On App.vue, which is where the currently logged in user is stored, it would make sense to make a method that runs everytime App.vue is mounted(). This is useful because even though the browser keeps the cookie until logged out or it expires, App.vue previously only realised it was logged in after a successful login attempt. If it is then reloaded, or closed and then opened again later, unitl another login attempt is made the app thinks no one is logged in, since if forgot about the user when closed and it can't check the cookie directly.
+
+What we can do is when App.vue is mounted we trigger a method that sends an authentication request to the server, which will contain the cookie if it is present. The server can then either respond with nothing if no cookie with a valid token is present, leaving the app in the logged out state, or it can check the token, find the matching user, and send back the user data. This will then be used by the front end the same it is when the user is logged in, effectively allowing the app to check if anyone is logged in when it loads.
