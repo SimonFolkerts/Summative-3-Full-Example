@@ -13,7 +13,7 @@ const routeProtector = (req, res, next) => {
         res.json(error);
       } else {
         // otherwise, if valid, the decoded token is logged, and the middleware executes next() which allows the request to continue to the endpoint
-        console.log(decodedToken);
+        req.token = decodedToken;
         next();
       }
     });

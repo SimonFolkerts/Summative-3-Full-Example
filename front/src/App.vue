@@ -31,6 +31,17 @@ export default {
     };
   },
   methods: {
+    async checkUser() {
+      const response = await fetch("http://127.0.0.1:3000/authenticate", {
+        credentials: "include",
+      });
+      const data = await response.json();
+      if (data.username) {
+        this.user = data;
+      } else {
+        this.user = null;
+      }
+    },
     async logout() {
       const response = await fetch("http://127.0.0.1:3000/logout", {
         credentials: "include",
@@ -44,6 +55,9 @@ export default {
     updateUser(user) {
       this.user = user;
     },
+  },
+  mounted() {
+    this.checkUser();
   },
 };
 </script>

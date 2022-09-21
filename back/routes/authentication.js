@@ -68,4 +68,11 @@ router.get("/logout", (req, res) => {
   res.json({ message: "hello" });
 });
 
+const requireAuth = require("../middleware/authMiddleware.js");
+
+router.get("/authenticate", requireAuth, async (req, res) => {
+  const user = await User.findById(req.token.id);
+  res.json(user);
+});
+
 module.exports = router;
