@@ -35,7 +35,13 @@ export default {
         }),
       });
       const data = await response.json();
-      console.log(data);
+      // i fuser data is returned then authentication was a success, save the user data as a data property.
+      if (data.username) {
+        this.$emit("userLoggedIn", data);
+      } else {
+        // else if not then it must have failed, log an error message and await retry
+        console.log("error");
+      }
     },
   },
 };
