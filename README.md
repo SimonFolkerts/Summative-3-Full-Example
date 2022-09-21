@@ -190,3 +190,18 @@ One issue with the current implementation is that if th front end app is reloade
 On App.vue, which is where the currently logged in user is stored, it would make sense to make a method that runs everytime App.vue is mounted(). This is useful because even though the browser keeps the cookie until logged out or it expires, App.vue previously only realised it was logged in after a successful login attempt. If it is then reloaded, or closed and then opened again later, unitl another login attempt is made the app thinks no one is logged in, since if forgot about the user when closed and it can't check the cookie directly.
 
 What we can do is when App.vue is mounted we trigger a method that sends an authentication request to the server, which will contain the cookie if it is present. The server can then either respond with nothing if no cookie with a valid token is present, leaving the app in the logged out state, or it can check the token, find the matching user, and send back the user data. This will then be used by the front end the same it is when the user is logged in, effectively allowing the app to check if anyone is logged in when it loads.
+
+## 18: Post Ownership
+We need to be able to tell who owns which post, so that in the future we can prevent people from deleting or editing other peoples posts. First, we need to be able to include the id of the user who created the post into the data when submitting the post to the server.
+
+We can achieve this by using props to pass the object representing the currently logged in user into the HomeView, and then again down into the CreatePost component, which is modified to accept the user as an incoming object prop. The user id is then attached as a new field to the post data, before being sent up to the server. We can take further advantage of the user object now being available in the createPost component by displaying a message stating that the logged in user is making a new post, and also hiding the createPost component using v-if when a user is not logged in
+
+The schema for a post on the back end needs to be modified to have an additional 'author' field, which must be an objectId. With this change, when a new post is received by the back end with the user id included, that user id can be checked and saved into the database along with the title and content and image.
+
+Now that posts have authors, we can also modify the way that posts are returned to the client. When the client asks for a list of posts, we could just send them as is, as we have been, in which case they will now also have a string containing the authors user id as part of their data. This is not particularly useful on its own though, however there is a special tool called populate that can be used when running Post.find(). Populate can read fields with objectIds in them and load in the data that that id belongs to. By running populate like this: `Post.find().populate('author')` the author object id string will be replaced with the full author user object from the user collection.
+
+We can even request only certain fields be filled, like this: `Post.find().populate('author', 'username')`. This will return a post object, with a user object containing just the id and username embedded in it. Very useful.
+
+We can then tweak the front end list view component to display the author username on the post list
+
+By changing the detail view and detail endpoint we can achieve a similar effect there too.

@@ -13,7 +13,7 @@
   </header>
 
   <!-- modification of the router view to preserve the state of the home view when navigated away from. This means it doesn't have to reload when switched away from and then back to -->
-  <RouterView @user-logged-in="updateUser" v-slot="{ Component }">
+  <RouterView @user-logged-in="updateUser" v-slot="{ Component }" :user="user">
     <!-- list of components to keep-alive here -->
     <keep-alive include="home">
       <component :is="Component" />

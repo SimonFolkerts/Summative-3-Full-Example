@@ -2,6 +2,7 @@
   <div>
     <h1>Post Detail</h1>
     <div v-if="post" class="post-content">
+      <p>Author: {{ post.author.username }}</p>
       <button type="button" @click="editing = true">Edit Post</button>
       <div v-if="editing">
         <CreatePost :editingPost="post" />

@@ -25,6 +25,7 @@ const upload = multer({
 // import the post model
 const Post = require("../models/Posts.js");
 const requireAuth = require("../middleware/authMiddleware.js");
+const { populate } = require("../models/Posts.js");
 
 // endpoint can now read and save a file with a fieldname of image
 router.post("/", requireAuth, upload.single("image"), (req, res) => {
@@ -40,6 +41,7 @@ router.post("/", requireAuth, upload.single("image"), (req, res) => {
           contentType: "image/png",
         }
       : null,
+    author: req.body.author,
   });
 
   // save the new document, and once complete, send back the new document to the client
@@ -74,13 +76,15 @@ router.put("/:id", upload.single("image"), (req, res) => {
 });
 
 router.get("/", async (req, res) => {
-  const posts = await Post.find({}).lean();
+  // when getting the list of posts, because the author field is an objectId referring to a user, we can use populate() to load that user into the result for each post
+  // here we are requesting the author document be loaded into the post document, but only with the username
+  const posts = await Post.find({}).populate("author", "username").lean();
   // send the data back to the client
   res.json(posts);
 });
 
 router.get("/:id", async (req, res) => {
-  const post = await Post.findById(req.params.id).lean();
+  const post = await Post.findById(req.params.id).populate("author").lean();
   res.json(post);
 });
 

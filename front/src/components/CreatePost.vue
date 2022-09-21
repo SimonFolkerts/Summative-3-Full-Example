@@ -1,6 +1,10 @@
 <template>
   <div class="component-root">
     <h3>Create/Edit Post Component</h3>
+    <!-- indicator here shows that username of the currently logged in user -->
+    <h4>
+      User <span>{{ user.username }}</span> is creating a new post!
+    </h4>
     <form @submit.prevent @reset="resetForm" ref="uploadForm">
       <div class="form-group">
         <label for="title">Title</label>
@@ -28,6 +32,8 @@
 export default {
   props: {
     editingPost: Object,
+    // create object expects to receive the currently logged in user as a prop
+    user: Object,
   },
   data() {
     return {
@@ -49,6 +55,9 @@ export default {
       formData.append("title", this.title);
       formData.append("content", this.content);
       formData.append("image", this.image);
+
+      // add the user id to the uploaded post
+      formData.append("author", this.user._id);
 
       // prepare request settings and load up the data
       const config = {
@@ -94,4 +103,8 @@ export default {
 };
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+h4 > span {
+  text-decoration: underline;
+}
+</style>

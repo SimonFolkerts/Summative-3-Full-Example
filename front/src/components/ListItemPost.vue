@@ -2,6 +2,8 @@
   <!-- this component shows an individual post item, rather than having them defined in the list view they are now a standalone component that the list view can utilise. It contains the ability to delete itself from the database and has a status indicator that uses to show when a deletion is in progress. This is achieved by setting a flag variable "deletePending" to false and using conditional rendering to hide the delete button and instead show the 'deleting...' message -->
   <div class="post-list-item">
     <h3>{{ post.title }}</h3>
+    <!-- since the post was populated with the author by the server during the find() operation, we have access to the author objects username -->
+    <p>Author: {{ post.author.username }}</p>
 
     <!-- button for switching to the detail view -->
     <RouterLink
