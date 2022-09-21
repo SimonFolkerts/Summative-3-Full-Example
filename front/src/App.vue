@@ -23,7 +23,9 @@ import { RouterLink, RouterView } from "vue-router";
 export default {
   methods: {
     async logout() {
-      const response = await fetch("http://127.0.0.1:3000/logout");
+      const response = await fetch("http://127.0.0.1:3000/logout", {
+        credentials: "include",
+      });
       const data = await response.json();
       console.log(data);
       this.$router.push("/");
