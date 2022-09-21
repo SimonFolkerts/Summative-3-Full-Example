@@ -179,3 +179,8 @@ This middleware can be attached to any route that we want to only be accessible 
 ### Next Steps
 That is where we are so far, the next steps would be to distinguish different roles for users, such as administrators, or user who own the particular resource they are accessing. There are a variety of ways to acheive this, a straightforward and secure way would be every time the authentication middleware is used to check an incoming request, it decodes the user id out of the token (remember that when the token is created it has the user id encoded into it?). The middleware can then attach the user id to the request object before passing it on the the endpoint it is attached to. The endpoint can then read the id and look up the user in the database to see what roles they have, or it can compare the id to the author id of the post or comment it is handling to check if it is a match and whether to proceed or not. Lots of options for how to handle this, but that is one way.
 
+## 16: Tracking Logged In vs Logged Out State
+When a user logs in successfully, the API sends back the user data of the logged user. We can store this on the App.vue data(). Once the user clicks log out, we can clear it again. By keeping track of if there is a saved user and what their details are on the front end, we can conditionally render a welcome message and also swap out the log out and log in buttons as appropriate.
+
+In the next steps we will also use this data to add an author field to posts.
+
