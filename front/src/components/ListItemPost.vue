@@ -4,14 +4,15 @@
     <h3>{{ post.title }}</h3>
     <!-- since the post was populated with the author by the server during the find() operation, we have access to the author objects username -->
     <p>Author: {{ post.author.username }}</p>
-
     <!-- button for switching to the detail view -->
     <RouterLink
       id="detail-link"
       :to="{ name: 'postDetail', params: { id: post._id } }"
       ><button type="button">View Post</button></RouterLink
     >
-    <div class="delete-items">
+
+    <!-- if there is a user, compare the user id to the post author id which returns either true of false, showing the button if the user is the author, hiding it if not; otherwise if there is no user evaluate to false, hiding the button -->
+    <div class="delete-items" v-if="user ? user._id == post.author._id : false">
       <button v-if="!deletePending" @click="deletePost" type="button">
         Delete
       </button>
@@ -26,6 +27,7 @@
 export default {
   props: {
     post: Object,
+    user: Object,
   },
   data() {
     return {

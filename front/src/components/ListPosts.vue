@@ -9,6 +9,7 @@
         v-for="post of postList"
         :key="post._id"
         :post="post"
+        :user="user"
       />
 
       <p v-if="!postList.length">Nothing to see here, upload a post!</p>
@@ -20,6 +21,9 @@
 <script>
 import ListItemPost from "./ListItemPost.vue";
 export default {
+  props: {
+    user: Object,
+  },
   components: {
     ListItemPost,
   },

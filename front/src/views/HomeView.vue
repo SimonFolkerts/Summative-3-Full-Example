@@ -2,7 +2,7 @@
   <div>
     <h1>Home</h1>
     <CreatePost v-if="user" :user="user" />
-    <ListPosts />
+    <ListPosts :user="user" />
   </div>
 </template>
 

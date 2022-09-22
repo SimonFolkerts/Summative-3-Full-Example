@@ -3,7 +3,14 @@
     <h1>Post Detail</h1>
     <div v-if="post" class="post-content">
       <p>Author: {{ post.author.username }}</p>
-      <button type="button" @click="editing = true">Edit Post</button>
+      <!-- if there is a user, compare the user id to the post author id which returns either true of false, showing the button if the user is the author, hiding it if not; otherwise if there is no user evaluate to false, hiding the button -->
+      <button
+        v-if="user ? user._id == post.author._id : false"
+        type="button"
+        @click="editing = true"
+      >
+        Edit Post
+      </button>
       <div v-if="editing">
         <CreatePost :editingPost="post" :user="user" />
       </div>

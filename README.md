@@ -212,3 +212,15 @@ Now that we have the ability to determine who is logged in, we can add authorisa
 Note, since the createPosts component now needs to have the user passed into it to function properly, in this step the edit view and the createPost component have been updated too to also use this pattern, a step that was missed earlier on. Now bith edit and create should work, and edit and delete should be available only to the owners of the post.
 
 The final step will be to conditionally render the edit or delete button to only show on the posts that are owned by the currently logged in user.
+
+## 20: Conditional Rendering for Owned Posts
+The edit view already has the user propped into it, so we can make some logic that determines whether or not it should be rendered. If no user is logged in, hide the button and don't try to check the user, as this will result in an undefined error otherwise. If a user is logged in, and is the author, show the button. If a user is logged in but is not the author, hide the button. 
+
+we can represent this logic using a ternary operator: user ? user._id == post.author._is : false
+
+If there is a user, compare ids and show either true or false based on if they are a match, otherwise just evaluate to false.
+This means that if there is no user the code won't try to find the user id and crash with an 'undefined' error
+
+We can do the same thing to the ListItemPost.vue component, by propping the user from the HomeView into the ListView and then into the ListItemView, and performing the same logic using a ternary operator.
+
+You might be wondering if using such deeply nested props is the best way forward, and you'd be right to do so. In larger projects, for some global value that represents the state of the application such as is someone logged in etc, we would use a state management add on like VueX or Pinia, but for this small scale example we will keep things basic.
