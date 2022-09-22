@@ -205,3 +205,10 @@ We can even request only certain fields be filled, like this: `Post.find().popul
 We can then tweak the front end list view component to display the author username on the post list
 
 By changing the detail view and detail endpoint we can achieve a similar effect there too.
+
+## 19: Authorisation for CRUD Actions
+Now that we have the ability to determine who is logged in, we can add authorisation for certain actions. For every request that includes credentials, we are decoding the token and attaching it to the request object using the authentication middleware. In the edit and delete endpoints we can then access the token on the request object and find the associated user. Then we check if that user is the owner of the post that is being deleted or edited and if so, complete the action, and if not, send back an unauthorised message.
+
+Note, since the createPosts component now needs to have the user passed into it to function properly, in this step the edit view and the createPost component have been updated too to also use this pattern, a step that was missed earlier on. Now bith edit and create should work, and edit and delete should be available only to the owners of the post.
+
+The final step will be to conditionally render the edit or delete button to only show on the posts that are owned by the currently logged in user.

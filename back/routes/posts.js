@@ -24,8 +24,8 @@ const upload = multer({
 
 // import the post model
 const Post = require("../models/Posts.js");
+const User = require("../models/User.js");
 const requireAuth = require("../middleware/authMiddleware.js");
-const { populate } = require("../models/Posts.js");
 
 // endpoint can now read and save a file with a fieldname of image
 router.post("/", requireAuth, upload.single("image"), (req, res) => {
@@ -52,27 +52,33 @@ router.post("/", requireAuth, upload.single("image"), (req, res) => {
   });
 });
 
-router.put("/:id", upload.single("image"), (req, res) => {
-  const data = {
-    title: req.body.title,
-    content: req.body.content,
-  };
+router.put("/:id", requireAuth, upload.single("image"), async (req, res) => {
+  const post = await Post.findById(req.params.id);
+  const user = await User.findById(req.token.id);
 
-  if (req.file) {
-    data.image = {
-      // the image is read from the upload folder where multer put it
-      data: fs.readFileSync(path.join("./uploads/" + req.file.filename)),
-      // inform of what type of file it is
-      contentType: "image/png",
+  if (post.author.toString() != user._id.toString()) {
+    res.status(403).json({ message: "Unauthorised" });
+  } else {
+    const data = {
+      title: req.body.title,
+      content: req.body.content,
     };
-  }
-  console.log(data);
-  const post = Post.findByIdAndUpdate(req.params.id, data, () => {
+
+    if (req.file) {
+      data.image = {
+        // the image is read from the upload folder where multer put it
+        data: fs.readFileSync(path.join("./uploads/" + req.file.filename)),
+        // inform of what type of file it is
+        contentType: "image/png",
+      };
+    }
+
+    const updated = await Post.findByIdAndUpdate(req.params.id, data);
     if (req.file) {
       fs.unlinkSync(path.join("./uploads/" + req.file.filename));
     }
-    res.json({ message: "updated" });
-  });
+    res.json(updated);
+  }
 });
 
 router.get("/", async (req, res) => {
@@ -89,8 +95,15 @@ router.get("/:id", async (req, res) => {
 });
 
 router.delete("/:id", requireAuth, async (req, res) => {
-  const deleted = await Post.findByIdAndDelete(req.params.id);
-  res.json(deleted);
+  const post = await Post.findById(req.params.id);
+  const user = await User.findById(req.token.id);
+
+  if (post.author.toString() != user._id.toString()) {
+    res.status(403).json({ message: "Unauthorised" });
+  } else {
+    const deleted = await Post.findByIdAndDelete(req.params.id);
+    res.json(deleted);
+  }
 });
 
 module.exports = router;
