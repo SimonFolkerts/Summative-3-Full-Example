@@ -3,7 +3,8 @@
     <h3>Create/Edit Post Component</h3>
     <!-- indicator here shows that username of the currently logged in user -->
     <h4>
-      User <span>{{ user.username }}</span> is creating a new post!
+      User <span>{{ user.username }}</span> is
+      {{ editingPost ? "editing" : "creating" }} a post!
     </h4>
     <form @submit.prevent @reset="resetForm" ref="uploadForm">
       <div class="form-group">

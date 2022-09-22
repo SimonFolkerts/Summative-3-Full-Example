@@ -5,7 +5,7 @@
       <p>Author: {{ post.author.username }}</p>
       <button type="button" @click="editing = true">Edit Post</button>
       <div v-if="editing">
-        <CreatePost :editingPost="post" />
+        <CreatePost :editingPost="post" :user="user" />
       </div>
       <div v-else>
         <h2>{{ post.title }}</h2>
@@ -25,6 +25,9 @@
 <script>
 import CreatePost from "../components/CreatePost.vue";
 export default {
+  props: {
+    user: Object,
+  },
   components: {
     CreatePost,
   },
